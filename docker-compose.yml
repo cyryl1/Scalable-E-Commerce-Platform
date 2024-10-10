@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./user-service:/app
+    networks:
+      - ecommerce-network
+
+  product-catalog-service:
+    build: ./product-catalog-service
+    ports:
+      - "5002:5002"
+    volumes:
+      - ./product-catalog-service:/app
+    networks:
+      - ecommerce-network
+
+  shopping-cart-service:
+    build: ./shopping-cart-service
+    ports:
+      - "5003:5003"
+    volumes:
+      - ./shopping-cart-service:/app
+    networks:
+      - ecommerce-network
+
+  order-service:
+    build: ./order-service
+    ports:
+      - "5004:5004"
+    volumes:
+      - ./order-service:/app
+    networks:
+      - ecommerce-network
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "5005:5005"
+    volumes:
+      - ./payment-service:/app
+    networks:
+      - ecommerce-network
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "5006:5006"
+    volumes:
+      - ./notification-service:/app
+    networks:
+      - ecommerce-network
+
+networks:
+  ecommerce-network:
+    driver: bridge
