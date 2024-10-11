@@ -1,1 +1,5 @@
-flask
+Flask
+FLask-SQLAlchemy
+Flask-JWT-Extended # for JWT-based authentication
+Werkzeug # for password hashing
+flask_cors
