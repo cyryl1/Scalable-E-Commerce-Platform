@@ -89,6 +89,8 @@ def update_profile():
         "message": "Profile updated successfully"
     }), 200
 
+# TODO- Add logout and delete user.
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
