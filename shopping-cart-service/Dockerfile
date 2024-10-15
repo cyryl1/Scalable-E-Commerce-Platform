@@ -1,5 +1,5 @@
 # Docker file for User service
-FROM python:3.9
+FROM python:3.8
 
 # Set the working directory
 WORKDIR /app

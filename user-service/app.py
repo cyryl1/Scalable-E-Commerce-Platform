@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from models import db, User
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from models import db, User, TokenBlacklist
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
+from datetime import timedelta
 
 app = Flask(__name__)
 CORS(app)
@@ -12,6 +13,8 @@ app.config['JWT_SECRET_KEY'] = 'Praise2020'
 
 db.init_app(app)
 jwt = JWTManager(app)
+
+
 
 # create database table
 @app.before_request
@@ -49,7 +52,16 @@ def login_user():
     if not user or not user.check_password(password):
         return jsonify({"message": "Invalid credentials, check username or pasword"}), 401
     
-    access_token = create_access_token(identity=username)
+    access_token = create_access_token(identity=username, expires_delta=timedelta(hours=1))
+    refresh_token = create_refresh_token(identity=username, expires_delta=timedelta(days=7))
+    return jsonify(access_token=access_token, refresh_token=refresh_token), 200
+
+# refresh token
+
+@app.route('/refresh', methods=["POST"])
+def refresh_tokens(refresh=True):
+    user = get_jwt_identity()
+    access_token = create_access_token(identity=user)
     return jsonify(access_token=access_token), 200
 
 # Get user profile
@@ -88,6 +100,16 @@ def update_profile():
     return jsonify({
         "message": "Profile updated successfully"
     }), 200
+
+@app.route("/logout", methods=["DELETE"])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]
+    token_type = get_jwt()["type"]
+    blacklisted_token = TokenBlacklist(jti=jti, token_type=token_type)
+    db.session.add(blacklisted_token)
+    db.session.commit()
+    return jsonify({"message": "Logged out"}), 200
 
 # TODO- Add logout and delete user.
 

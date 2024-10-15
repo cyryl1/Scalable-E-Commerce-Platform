@@ -4,6 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 db = SQLAlchemy()
 
 class User(db.Model):
+    __tablname__ = 'user'
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), unique=True, nullable=False)
@@ -16,3 +18,11 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+class TokenBlacklist(db.Model):
+    __tablename__ = 'token_blacklist'
+
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(36), nullable=False, unique=True)
+    token_type = db.Column(db.String(36), nullable=False)
+    blacklisted_on = db.Column(db.DateTime, nullable=False)
