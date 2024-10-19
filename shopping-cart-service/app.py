@@ -36,7 +36,7 @@ def create_cart():
 @app.route("/cart/items", methods=["GET"])
 @jwt_required()
 def get_cart_items():
-    username = get_jwt_identity
+    username = get_jwt_identity()
 
     cart = Cart.query.filter_by(username=username).first()
     if not cart:
@@ -45,7 +45,7 @@ def get_cart_items():
     cart_items = CartItem.query.filter_by(cart_id=cart.id).all()
 
     cart_list = [{
-        "product_id": item.product_id,
+        "product_name": item.product_name,
         "quantity": item.quantity,
         "price": item.price
     } for item in cart_items]
