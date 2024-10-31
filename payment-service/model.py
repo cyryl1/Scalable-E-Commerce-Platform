@@ -7,7 +7,7 @@ db = SQLAlchemy()
 class Payment(db.Model):
     __tablename__ = 'payment'
 
-    id = db.Column(db.String(36), primary_key=True, default=lambda:str(uuid.uuid4), nullable=False)
+    payment_id = db.Column(db.String(36), primary_key=True, default=lambda:str(uuid.uuid4), nullable=False)
     order_id = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(100), nullable=False)
     amount = db.Column(db.Float, nullable=False)

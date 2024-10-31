@@ -3,6 +3,10 @@ from models import db, Cart, CartItem
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 from datetime import datetime
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 app = Flask(__name__)
@@ -10,7 +14,7 @@ jwt = JWTManager(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shoppingcart_db.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'Praise2020'
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
 
 db.init_app(app)
 
