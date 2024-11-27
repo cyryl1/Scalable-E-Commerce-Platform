@@ -1,5 +1,6 @@
-Flask
-FLask-SQLAlchemy
-Flask-JWT-Extended # for JWT-based authentication
 Werkzeug # for password hashing
-flask_cors
+Flask==2.3.2
+Flask-SQLAlchemy==3.0.5
+Flask-JWT-Extended==4.5.2
+python-dotenv==1.0.0
+requests==2.31.0

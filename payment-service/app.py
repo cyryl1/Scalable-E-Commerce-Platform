@@ -4,7 +4,7 @@ from datetime import datetime
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 from model import db, Payment
 from dotenv import load_dotenv
-from paystack import Paystack
+# from paystack import Paystack
 import requests
 import os
 
@@ -42,29 +42,30 @@ def create_payment():
     payment_gateway = data['payment_gateway']
     
 
-    try:
-        user = requests.get("http://127.0.0.1:5003")
-        user_data = user.json()
-        if user.username == username:
-            email = user_data["email"]
-        else:
-            return jsonify({"User not found"}), 404
-        
-        url = "https://api.paystack.co/transaction/initialize"
-        headers = {
-            "Authorization": f"Bearer {app.config['PAYSTACK_SECRET_KEY']}",
-            "Content-Type": "application/json"
-        }
-        data = {
-            "email": email,
-            "amount": amount
-        }
-        transaction = requests.post(url=url, headers=headers, data=data)
-        if transaction.status_code == 200:
-            response_data = transaction.json()
+    # try:
+    user = requests.get("http://127.0.0.1:5001")
+    user_data = user.json()
+    if user.username == username:
+        email = user_data["email"]
+    else:
+        return jsonify({"User not found"}), 404
+    
+    url = "https://api.paystack.co/transaction/initialize"
+    headers = {
+        "Authorization": f"Bearer {app.config['PAYSTACK_SECRET_KEY']}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "email": email,
+        "amount": amount
+    }
+    transaction = requests.post(url=url, headers=headers, data=data)
+    print(transaction)
+    if transaction.status_code == 200:
+        response_data = transaction.json()
             # transaction_uri = response_data["data"]["authorization_url"]
-    except Exception as e:
-        return jsonify({"message": f"Failed to initialize transaction: {str(e)}"}), 500
+    # except Exception as e:
+        # return jsonify({"message": f"Failed to initialize transaction: {str(e)}"}), 500
             
 
     new_payment = Payment(
@@ -118,7 +119,7 @@ def get_payment(payment_id):
         'channel': data['data']['channel']
     }), 200
 
-@app.route('/payments/<int: payment_id>', methods=["PUT"])
+@app.route('/payments/<payment_id>', methods=["PUT"])
 def update_status(payment_id):
     payment = Payment.query.filter_by(payment_id=payment_id).first()
     if not payment:
